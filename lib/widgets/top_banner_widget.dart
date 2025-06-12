@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 
-import 'package:chinoshop/images/no_img_base64.dart';
+import 'package:portfolio_chinoshop/images/no_img_base64.dart';
 
 
 class TopBannerCarousel extends StatelessWidget {

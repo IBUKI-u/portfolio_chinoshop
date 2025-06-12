@@ -1,17 +1,17 @@
 // pages/home.dart
-import 'package:chinoshop/services/cart_service.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 
-import 'cart_page.dart';
-import '../admin/admin_main_page.dart';
-import '../../widgets/item_detail_dialog.dart';
-import '../../widgets/top_banner_widget.dart';
-import '../../images/no_img_base64.dart';
-import '../../widgets/common_app_bar.dart';
-import '../../constants/app_constants.dart';
-import '../../widgets/cart_badge.dart';
+import 'package:portfolio_chinoshop/constants/app_constants.dart';
+import 'package:portfolio_chinoshop/images/no_img_base64.dart';
+import 'package:portfolio_chinoshop/pages/admin/admin_main_page.dart';
+import 'package:portfolio_chinoshop/pages/main/cart_page.dart';
+import 'package:portfolio_chinoshop/services/cart_service.dart';
+import 'package:portfolio_chinoshop/widgets/item_detail_dialog.dart';
+import 'package:portfolio_chinoshop/widgets/top_banner_widget.dart';
+import 'package:portfolio_chinoshop/widgets/common_app_bar.dart';
+import 'package:portfolio_chinoshop/widgets/cart_badge.dart';
 
 class HomePage extends StatefulWidget {
   final String userId;
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
       return query.where('category', isEqualTo: selectedCategory).snapshots();
     }
     
-    return query.snapshots();
+    return query.orderBy('name').snapshots();
   }
 
   List<QueryDocumentSnapshot> _filterItems(List<QueryDocumentSnapshot> docs) {
@@ -241,6 +241,7 @@ class _HomePageState extends State<HomePage> {
       stream: _getItemsStream(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
+          print(snapshot.error);
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

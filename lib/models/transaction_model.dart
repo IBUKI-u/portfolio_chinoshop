@@ -24,6 +24,31 @@ class TransactionModel {
     this.orderId,
   });
 
+  /// copyWithメソッド
+  TransactionModel copyWith({
+    String? id,
+    String? safeId,
+    String? accountTitle,
+    int? amount,
+    DateTime? transactionDate,
+    String? relatedUserId,
+    String? notes,
+    String? paymentStatus,
+    String? orderId,
+  }) {
+    return TransactionModel(
+      id: id ?? this.id,
+      safeId: safeId ?? this.safeId,
+      accountTitle: accountTitle ?? this.accountTitle,
+      amount: amount ?? this.amount,
+      transactionDate: transactionDate ?? this.transactionDate,
+      relatedUserId: relatedUserId ?? this.relatedUserId,
+      notes: notes ?? this.notes,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
+      orderId: orderId ?? this.orderId,
+    );
+  }
+
   factory TransactionModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return TransactionModel(
@@ -39,7 +64,7 @@ class TransactionModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFirestore() {
     return {
       'safeId': safeId,
       'accountTitle': accountTitle,

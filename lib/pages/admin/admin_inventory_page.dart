@@ -600,9 +600,6 @@ class _AdminInventoryPageState extends State<AdminInventoryPage> {
         trailing: PopupMenuButton<String>(
           onSelected: (value) {
             switch (value) {
-              case 'adjust':
-                _adjustStock(id, stock, name);
-                break;
               case 'edit':
                 _editItem(id);
                 break;
@@ -615,16 +612,6 @@ class _AdminInventoryPageState extends State<AdminInventoryPage> {
             }
           },
           itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'adjust',
-              child: Row(
-                children: [
-                  Icon(Icons.edit_outlined),
-                  SizedBox(width: 8),
-                  Text('在庫調整'),
-                ],
-              ),
-            ),
             const PopupMenuItem(
               value: 'edit',
               child: Row(

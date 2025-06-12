@@ -8,7 +8,10 @@ import 'order_items_widget.dart';
 class OrderCard extends StatelessWidget {
   final QueryDocumentSnapshot orderDoc;
 
-  OrderCard({super.key, required this.orderDoc});
+  OrderCard({
+    super.key, 
+    required this.orderDoc,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +20,7 @@ class OrderCard extends StatelessWidget {
     final totalAmount = order['totalAmount'] ?? 0;
     final accountTitle = order['accountTitle'] ?? '';
     final paymentStatus = order['paymentStatus'] ?? '';
-    final notes = order['notes'] ?? '';
+    final isManualEntry = order['isManualEntry'] ?? false; // 手動入力フラグ
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -37,14 +40,10 @@ class OrderCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(orderDate, accountTitle, paymentStatus),
+            _buildHeader(orderDate, accountTitle, paymentStatus, isManualEntry),
             const SizedBox(height: 16),
             OrderItemsWidget(orderId: orderDoc.id),
             const SizedBox(height: 16),
-            if (notes.isNotEmpty) ...[
-              _buildNotesSection(notes),
-              const SizedBox(height: 16),
-            ],
             _buildTotalAmount(totalAmount),
           ],
         ),
@@ -52,129 +51,116 @@ class OrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(DateTime? orderDate, String accountTitle, String paymentStatus) {
+  Widget _buildHeader(DateTime? orderDate, String accountTitle, String paymentStatus, bool isManualEntry) {
     final isTsuke = accountTitle == 'tsuke_purchase';
     final isPaid = paymentStatus == 'paid';
 
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                orderDate != null 
-                    ? DateFormat('[yyyy/MM/dd]').format(orderDate)
-                    : '日付不明',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                ),
-              ),
-              Text(
-                orderDate != null 
-                    ? DateFormat(' HH:mm').format(orderDate)
-                    : '',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (isTsuke) ...[
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            decoration: BoxDecoration(
-              color: isPaid ? Colors.green[50] : Colors.red[50],
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: isPaid ? Colors.green : Colors.red,
-                width: 1,
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    orderDate != null 
+                        ? DateFormat('[yyyy/MM/dd]').format(orderDate)
+                        : '日付不明',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                    ),
+                  ),
+                  Text(
+                    orderDate != null 
+                        ? DateFormat(' HH:mm').format(orderDate)
+                        : '',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  isPaid ? Icons.check_circle : Icons.schedule,
-                  color: isPaid ? Colors.green[700] : Colors.red[700],
-                  size: 16,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  isPaid ? '支払い済み' : '未払い',
-                  style: TextStyle(
-                    color: isPaid ? Colors.green[700] : Colors.red[700],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
+            if (isTsuke) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isPaid ? Colors.green[50] : Colors.red[50],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: isPaid ? Colors.green : Colors.red,
+                    width: 1,
                   ),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-        ],
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: OrderUtils.getAccountTitleColor(accountTitle).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: OrderUtils.getAccountTitleColor(accountTitle),
-              width: 1,
-            ),
-          ),
-          child: Text(
-            OrderUtils.getAccountTitleText(accountTitle),
-            style: TextStyle(
-              color: OrderUtils.getAccountTitleColor(accountTitle),
-              fontWeight: FontWeight.w600,
-              fontSize: 12,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNotesSection(String notes) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.blue[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.blue[200]!),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.note, size: 16, color: Colors.blue[700]),
-              const SizedBox(width: 6),
-              Text(
-                '備考',
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isPaid ? Icons.check_circle : Icons.schedule,
+                      color: isPaid ? Colors.green[700] : Colors.red[700],
+                      size: 16,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      isPaid ? '支払い済み' : '未払い',
+                      style: TextStyle(
+                        color: isPaid ? Colors.green[700] : Colors.red[700],
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: OrderUtils.getAccountTitleColor(accountTitle).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: OrderUtils.getAccountTitleColor(accountTitle),
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                OrderUtils.getAccountTitleText(accountTitle),
                 style: TextStyle(
+                  color: OrderUtils.getAccountTitleColor(accountTitle),
                   fontWeight: FontWeight.w600,
-                  color: Colors.blue[700],
                   fontSize: 12,
                 ),
               ),
+            ),
+          ],
+        ),
+        
+        // 手動入力バッジを追加
+        if (isManualEntry) ...[
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.blue[300]!),
+                ),
+                child: Icon(
+                  Icons.edit,
+                  size: 14,
+                  color: Colors.blue[700],
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            notes,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.blue[800],
-            ),
-          ),
         ],
-      ),
+      ],
     );
   }
 

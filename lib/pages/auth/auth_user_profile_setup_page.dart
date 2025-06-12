@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'package:chinoshop/pages/main/navigation_page.dart';
+import 'package:portfolio_chinoshop/pages/main/navigation_page.dart';
 
 class UserProfileSetupPage extends StatefulWidget {
   const UserProfileSetupPage({Key? key}) : super(key: key);

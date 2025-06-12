@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'auth_user_profile_setup_page.dart';
-import 'package:chinoshop/pages/main/navigation_page.dart';
+import 'package:portfolio_chinoshop/pages/main/navigation_page.dart';
 
 class FirebaseAuthCheckPage extends StatefulWidget {
   const FirebaseAuthCheckPage({Key? key}) : super(key: key);
